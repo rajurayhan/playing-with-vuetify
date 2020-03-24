@@ -3,6 +3,50 @@
 - Researching Vuetify. 
 
 What I need- 
-	A repo where to push changes. 
+	A repo where to push changes? - 
+	Laravel v? - 6.9 (Previous One)
 	
 19-03-2020: 
+
+24-03-2020: 
+	- Will we use Vue routing or Laravel routing for Frontend stuffs? 
+
+	- For API we will use Laravel routes, right? 
+	- for Frontend end, we will use Vue? 
+	
+	- Use Vue router for frontend. 
+	- Laravel routes for API 
+
+	- Laravel will Just Take Requests and Respond 
+	- VueJS will handle all navigation.  
+
+Tasks: 
+
+	- Install Vue Router and Configure routes for Table Defination for now
+	- CRUD API for TableDefinition (1st Priority)
+			- Create
+			- Read/View (Single & All)
+			- Update 
+			- Delete 
+			
+	- Create Vue Components for Sign In  - Not now
+	- Create API for Sign In  - Not Now 
+
+	- APIs: 
+		- Authentication (Passport) - Skip for Now - We will do it later. 
+
+		- CRUD API for TableDefinition (1st Priority)
+			- Create
+			- Read/View (Single & All)
+			- Update 
+			- Delete 
+
+		- CRUD API for DataColumnMapping (Not me for now.)
+			- Create
+			- Read/View (Single & All)
+			- Update 
+			- Delete
+		
+	- Send Estimation for CRUD api and Implementation. 
+	- Prepare Docs to Serve the Application 
+	- Send Source as ZIP File Daily! 
