@@ -47,6 +47,36 @@ Tasks:
 			- Update 
 			- Delete
 		
-	- Send Estimation for CRUD api and Implementation. 
+	- Send Estimation for CRUD API and Implementation. 
 	- Prepare Docs to Serve the Application 
 	- Send Source as ZIP File Daily! 
+
+
+
+	25-03-2020:
+		- Vue Router Configuration and Dig Deep Vue Documentation 
+		- Solve Seeder Issue 
+		- Continue fron Yesterdays tasks. 
+
+
+	30-03-2020: 
+		- Will we use Vuetify Form Components for Create and Update? - Yes 
+		- Seeded Successfully! 
+		- Single Page or Bootstrap Modal for Create and Update? - Modal is fine 
+		- For now we will prepare the skeleton of the app and complete functionalities then we can design. 		
+		- Contact Megumu Sir regarding this project as Fujimaru Sir leaving this project. *** 
+		- 07:00 - 08:30 = Pair Programming from Next Week. 
+
+	Task Summery - 
+		- Implemet Form Components of Vuetify 
+		- Use Modals for Add and Update 
+		- Implement API for CRUD 
+			- Create 
+			- Read
+			- Update 
+			- Delete 
+		- Integrate APIs with Vue on Frontend 
+		- Do we need DETAILS view ? - Not for Now. 
+		- Vuetify Dialog is good for Confirmation. 
+
+
