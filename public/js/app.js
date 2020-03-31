@@ -2259,47 +2259,63 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       dialog: false,
       headers: [{
-        text: 'Dessert (100g serving)',
+        text: 'Table',
         align: 'start',
-        sortable: false,
-        value: 'name'
+        value: 'table_name'
       }, {
-        text: 'Calories',
-        value: 'calories'
+        text: 'Column',
+        value: 'column_name'
       }, {
-        text: 'Fat (g)',
-        value: 'fat'
+        text: 'Data Type',
+        value: 'data_type'
       }, {
-        text: 'Carbs (g)',
-        value: 'carbs'
+        text: 'Length',
+        value: 'length'
       }, {
-        text: 'Protein (g)',
-        value: 'protein'
+        text: 'Maximum Number',
+        value: 'maximum_number'
+      }, {
+        text: 'Decimal Part',
+        value: 'decimal_part'
+      }, {
+        text: 'Validation',
+        value: 'validation'
       }, {
         text: 'Actions',
         value: 'actions',
         sortable: false
       }],
+      tableDefinations: [],
       desserts: [],
       editedIndex: -1,
       editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
+        table_name: '',
+        column_name: '',
+        data_type: '',
+        length: 0,
+        maximum_number: 0,
+        decimal_part: 0,
+        validation: ''
       },
       defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
+        table_name: '',
+        column_name: '',
+        data_type: '',
+        length: 0,
+        maximum_number: 0,
+        decimal_part: 0,
+        validation: ''
       }
     };
   },
@@ -2314,95 +2330,39 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    this.initialize();
+    this.getTableDefinations();
   },
   methods: {
-    initialize: function initialize() {
-      this.desserts = [{
-        name: 'Frozen Yogurt',
-        calories: 159,
-        fat: 6.0,
-        carbs: 24,
-        protein: 4.0
-      }, {
-        name: 'Ice cream sandwich',
-        calories: 237,
-        fat: 9.0,
-        carbs: 37,
-        protein: 4.3
-      }, {
-        name: 'Eclair',
-        calories: 262,
-        fat: 16.0,
-        carbs: 23,
-        protein: 6.0
-      }, {
-        name: 'Cupcake',
-        calories: 305,
-        fat: 3.7,
-        carbs: 67,
-        protein: 4.3
-      }, {
-        name: 'Gingerbread',
-        calories: 356,
-        fat: 16.0,
-        carbs: 49,
-        protein: 3.9
-      }, {
-        name: 'Jelly bean',
-        calories: 375,
-        fat: 0.0,
-        carbs: 94,
-        protein: 0.0
-      }, {
-        name: 'Lollipop',
-        calories: 392,
-        fat: 0.2,
-        carbs: 98,
-        protein: 0
-      }, {
-        name: 'Honeycomb',
-        calories: 408,
-        fat: 3.2,
-        carbs: 87,
-        protein: 6.5
-      }, {
-        name: 'Donut',
-        calories: 452,
-        fat: 25.0,
-        carbs: 51,
-        protein: 4.9
-      }, {
-        name: 'KitKat',
-        calories: 518,
-        fat: 26.0,
-        carbs: 65,
-        protein: 7
-      }];
+    getTableDefinations: function getTableDefinations() {
+      var _this = this;
+
+      axios.get('/api/v1/table-definations').then(function (response) {
+        _this.tableDefinations = response.data;
+      });
     },
     editItem: function editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
+      this.editedIndex = this.tableDefinations.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
     deleteItem: function deleteItem(item) {
-      var index = this.desserts.indexOf(item);
-      confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1);
+      var index = this.tableDefinations.indexOf(item);
+      confirm('Are you sure you want to delete this item?') && this.tableDefinations.splice(index, 1);
     },
     close: function close() {
-      var _this = this;
+      var _this2 = this;
 
       this.dialog = false;
       setTimeout(function () {
-        _this.editedItem = Object.assign({}, _this.defaultItem);
-        _this.editedIndex = -1;
+        _this2.editedItem = Object.assign({}, _this2.defaultItem);
+        _this2.editedIndex = -1;
       }, 300);
     },
     save: function save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+        Object.assign(this.tableDefinations[this.editedIndex], this.editedItem);
       } else {
-        this.desserts.push(this.editedItem);
+        this.tableDefinations.push(this.editedItem);
       }
 
       this.close();
@@ -40440,7 +40400,11 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("v-data-table", {
     staticClass: "elevation-1",
-    attrs: { headers: _vm.headers, items: _vm.desserts, "sort-by": "calories" },
+    attrs: {
+      headers: _vm.headers,
+      items: _vm.tableDefinations,
+      "sort-by": "calories"
+    },
     scopedSlots: _vm._u([
       {
         key: "top",
@@ -40450,7 +40414,7 @@ var render = function() {
               "v-toolbar",
               { attrs: { flat: "", color: "white" } },
               [
-                _c("v-toolbar-title", [_vm._v("Table Definations")]),
+                _c("v-toolbar-title", [_vm._v("Table Definitions")]),
                 _vm._v(" "),
                 _c("v-divider", {
                   staticClass: "mx-4",
@@ -40519,17 +40483,17 @@ var render = function() {
                                       },
                                       [
                                         _c("v-text-field", {
-                                          attrs: { label: "Dessert name" },
+                                          attrs: { label: "Table Name" },
                                           model: {
-                                            value: _vm.editedItem.name,
+                                            value: _vm.editedItem.table_name,
                                             callback: function($$v) {
                                               _vm.$set(
                                                 _vm.editedItem,
-                                                "name",
+                                                "table_name",
                                                 $$v
                                               )
                                             },
-                                            expression: "editedItem.name"
+                                            expression: "editedItem.table_name"
                                           }
                                         })
                                       ],
@@ -40543,17 +40507,17 @@ var render = function() {
                                       },
                                       [
                                         _c("v-text-field", {
-                                          attrs: { label: "Calories" },
+                                          attrs: { label: "Column Name" },
                                           model: {
-                                            value: _vm.editedItem.calories,
+                                            value: _vm.editedItem.column_name,
                                             callback: function($$v) {
                                               _vm.$set(
                                                 _vm.editedItem,
-                                                "calories",
+                                                "column_name",
                                                 $$v
                                               )
                                             },
-                                            expression: "editedItem.calories"
+                                            expression: "editedItem.column_name"
                                           }
                                         })
                                       ],
@@ -40567,17 +40531,17 @@ var render = function() {
                                       },
                                       [
                                         _c("v-text-field", {
-                                          attrs: { label: "Fat (g)" },
+                                          attrs: { label: "Data Type" },
                                           model: {
-                                            value: _vm.editedItem.fat,
+                                            value: _vm.editedItem.data_type,
                                             callback: function($$v) {
                                               _vm.$set(
                                                 _vm.editedItem,
-                                                "fat",
+                                                "data_type",
                                                 $$v
                                               )
                                             },
-                                            expression: "editedItem.fat"
+                                            expression: "editedItem.data_type"
                                           }
                                         })
                                       ],
@@ -40591,17 +40555,17 @@ var render = function() {
                                       },
                                       [
                                         _c("v-text-field", {
-                                          attrs: { label: "Carbs (g)" },
+                                          attrs: { label: "Length" },
                                           model: {
-                                            value: _vm.editedItem.carbs,
+                                            value: _vm.editedItem.length,
                                             callback: function($$v) {
                                               _vm.$set(
                                                 _vm.editedItem,
-                                                "carbs",
+                                                "length",
                                                 $$v
                                               )
                                             },
-                                            expression: "editedItem.carbs"
+                                            expression: "editedItem.length"
                                           }
                                         })
                                       ],
@@ -40615,17 +40579,68 @@ var render = function() {
                                       },
                                       [
                                         _c("v-text-field", {
-                                          attrs: { label: "Protein (g)" },
+                                          attrs: { label: "Max Number" },
                                           model: {
-                                            value: _vm.editedItem.protein,
+                                            value:
+                                              _vm.editedItem.maximum_number,
                                             callback: function($$v) {
                                               _vm.$set(
                                                 _vm.editedItem,
-                                                "protein",
+                                                "maximum_number",
                                                 $$v
                                               )
                                             },
-                                            expression: "editedItem.protein"
+                                            expression:
+                                              "editedItem.maximum_number"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      {
+                                        attrs: { cols: "12", sm: "6", md: "4" }
+                                      },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: { label: "Decimal Part" },
+                                          model: {
+                                            value: _vm.editedItem.decimal_part,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.editedItem,
+                                                "decimal_part",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "editedItem.decimal_part"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      {
+                                        attrs: { cols: "12", sm: "6", md: "4" }
+                                      },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: { label: "Validation" },
+                                          model: {
+                                            value: _vm.editedItem.validation,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.editedItem,
+                                                "validation",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "editedItem.validation"
                                           }
                                         })
                                       ],

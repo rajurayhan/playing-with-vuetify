@@ -79,4 +79,10 @@ Tasks:
 		- Do we need DETAILS view ? - Not for Now. 
 		- Vuetify Dialog is good for Confirmation. 
 
+	
+	31-03-2020:
+		Progress: 
+			- Created Basic API for Table definations 
+			- Displayed data on Datatable.  
+
 
