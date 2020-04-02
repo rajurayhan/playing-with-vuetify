@@ -14,7 +14,7 @@ class CreateMTableDefinitionsTable extends Migration
     public function up()
     {
         Schema::create('m_table_definitions', function (Blueprint $table) {
-            $table->string('id', '10')->nullable();
+            $table->bigIncrements('id');
             $table->string('table_name')->nullable();
             $table->string('column_name')->nullable();
             $table->string('data_type')->nullable();

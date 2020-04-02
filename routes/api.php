@@ -19,3 +19,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/v1/table-definations', 'APIController@index')->name('getTableDefinations');
+
+Route::post('/v1/update/table-definations', 'APIController@update')->name('updateTableDefinations');
+
+Route::post('/v1/add/table-definations', 'APIController@add')->name('addTableDefinations');
+
+Route::post('/v1/delete/table-definations', 'APIController@delete')->name('deleteTableDefinations');

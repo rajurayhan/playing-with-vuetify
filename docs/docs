@@ -85,4 +85,30 @@ Tasks:
 			- Created Basic API for Table definations 
 			- Displayed data on Datatable.  
 
+	01-04-2020: 
+		- Add validation on Add and Edit API 
+		- Remove the Progress(?) bar after data is loaded on Loading v-datatable. - Done 
+		- Show Success/Error Message for Actions (CRUD) 
+
+	02-04-2020: 
+		Issue to Notice: Vuetify Default loading=true keeps the loading bar even after the table is ready. 
+		In that case, add a boolean type variable to manage the loading bar. 
+
+		My Problem: 
+			On create - 
+				The ID is missing in item object. - Solved
+				
+		We will not useThird party library. 
+		
+		- Error Handling 
+		- Database Table Create Functions
+		- On Edit Dialog,
+			Table name is readonly. 
+		- Add dropdown 
+			All
+			e_hiiku_seiseki	
+			user
+			anotherTable 
+
+
 

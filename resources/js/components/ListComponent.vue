@@ -1,89 +1,111 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="tableDefinations"
-    sort-by="calories"
-    class="elevation-1"
-  >
-    <template v-slot:top>
-      <v-toolbar flat color="white">
-        <v-toolbar-title>Table Definitions</v-toolbar-title>
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-        ></v-divider>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on }">
-            <v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
-
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.table_name" label="Table Name"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.column_name" label="Column Name"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.data_type" label="Data Type"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.length" label="Length"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.maximum_number" label="Max Number"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.decimal_part" label="Decimal Part"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.validation" label="Validation"></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="save">Save</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:item.actions="{ item }">
-      <v-icon
-        small
-        class="mr-2"
-        @click="editItem(item)"
+  <div>
+      <v-data-table
+      :headers="headers"
+      :items="tableDefinations"
+      :disable-pagination="true"
+      :hide-default-footer="true"
+      :loading="loadingStatus" 
+      class="elevation-1"
       >
-        mdi-pencil
-      </v-icon>
-      <v-icon
-        small
-        @click="deleteItem(item)"
+      <template v-slot:top>
+        <v-toolbar flat color="white">
+          <v-toolbar-title>Table Definitions</v-toolbar-title>
+          <v-divider
+            class="mx-4"
+            inset
+            vertical
+          ></v-divider>
+          <v-spacer></v-spacer>
+          <v-dialog v-model="dialog" max-width="500px">
+            <template v-slot:activator="{ on }">
+              <v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field type="text" v-model="editedItem.table_name" label="Table Name"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field type="text" v-model="editedItem.column_name" label="Column Name"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field type="text" v-model="editedItem.data_type" label="Data Type"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field type="number" v-model="editedItem.length" label="Length"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field type="number" v-model="editedItem.maximum_number" label="Max Number"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field type="number" v-model="editedItem.decimal_part" label="Decimal Part"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="4">
+                      <v-text-field type="text" v-model="editedItem.validation" label="Validation"></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
+                <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
+      <template v-slot:item.actions="{ item }">
+        <v-icon
+          small
+          class="mr-2"
+          @click="editItem(item)"
+        >
+          mdi-pencil
+        </v-icon>
+        <v-icon
+          small
+          @click="deleteItem(item)"
+        >
+          mdi-delete
+        </v-icon>
+      </template>
+      <template v-slot:no-data>
+        <v-btn color="primary" @click="getTableDefinations">Reset</v-btn>
+      </template>
+    </v-data-table>
+    <v-snackbar
+      v-model="snackbarProperty.snackbar"
+      :color="snackbarProperty.color"
+      :right="snackbarProperty.x === 'right'"
+      :timeout="snackbarProperty.timeout"
+      :top="snackbarProperty.y === 'top'"
+    >
+      {{ snackbarProperty.text }}
+      <v-btn
+        dark
+        text
+        @click="snackbarProperty.snackbar = false"
       >
-        mdi-delete
-      </v-icon>
-    </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">Reset</v-btn>
-    </template>
-  </v-data-table>
+        Close
+      </v-btn>
+    </v-snackbar>
+  </div>
 </template>
+
 
 <script>
   export default {
     data: () => ({
+      loadingStatus: true, // This will show loading bar on initialization
       dialog: false,
       headers: [
         {
@@ -120,6 +142,16 @@
         decimal_part: 0,
         validation: '',
       },
+      
+      snackbarProperty: {
+        snackbar: false, 
+        color: '',
+        // mode: 'vertical',
+        text: '',
+        timeout: 5000, 
+        x: 'right', 
+        y: 'top',
+      }
     }),
 
     computed: {
@@ -139,13 +171,22 @@
     },
 
     methods: {
+
+      showSnackBar(text, color){
+        this.snackbarProperty.snackbar  = true;
+        this.snackbarProperty.text      = text; 
+        this.snackbarProperty.color     = color;
+      },
       
       getTableDefinations(){
         axios
           .get('/api/v1/table-definations')
           .then(response => {
             this.tableDefinations = response.data;
+            this.loadingStatus    = false; // This will remove loading bar
+            this.showSnackBar('Data Fetched Successfully!', 'success');
           })
+          .catch(error => console.log(error))
           
       },
 
@@ -156,8 +197,19 @@
       },
 
       deleteItem (item) {
-        const index = this.tableDefinations.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.tableDefinations.splice(index, 1)
+        const index = this.tableDefinations.indexOf(item); 
+        console.log(item);
+        if(confirm('Are you sure you want to delete this item?')){
+          axios
+            .post('/api/v1/delete/table-definations', item)
+            .then(response => {
+              console.log(response);
+              this.showSnackBar('Deleted Successfully!', 'success');
+            })
+            .catch(error => console.log(error))
+
+            this.tableDefinations.splice(index, 1)
+        }
       },
 
       close () {
@@ -170,9 +222,24 @@
 
       save () {
         if (this.editedIndex > -1) {
+          axios
+            .post('/api/v1/update/table-definations', this.editedItem)
+            .then(response => {
+              console.log(response);
+              this.showSnackBar('Updated Successfully!', 'success');
+            })
+            .catch(error => console.log(error))
           Object.assign(this.tableDefinations[this.editedIndex], this.editedItem)
         } else {
-          this.tableDefinations.push(this.editedItem)
+          axios
+            .post('/api/v1/add/table-definations', this.editedItem)
+            .then(response => {
+              console.log(response);
+              this.showSnackBar('Created Successfully!', 'success');
+              this.tableDefinations.push(response.data)
+            })
+            .catch(error => console.log(error))
+          // this.tableDefinations.push(this.editedItem)
         }
         this.close()
       },
