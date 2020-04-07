@@ -4,13 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TableDefinition;
+use App\Models\Tables;
 use Validator;
 
 class APIController extends Controller
 {
-    public function index(){
-    	$tableDefinations = TableDefinition::get();
+    public function index(Request $request){
+        $tableID = $request->id;
+        if(isset($tableID) && $tableID){
+            $tableDefinations = TableDefinition::where('tables_id', $tableID)->get();
+        }
+        else{
+            $tableDefinations = TableDefinition::with('tables')->get();
+        }
     	return response()->json($tableDefinations);
+    }
+
+    public function getTables(){
+        // $tables = Tables::with('definations')->get();
+        $tables = Tables::get();
+        return response()->json($tables);
     }
 
     public function update(Request $request){
@@ -18,7 +31,7 @@ class APIController extends Controller
     	info($request->all());
 
     	$validator = Validator::make($request->all(), [
-		    'table_name' 		=> 'nullable|string', 
+		    'tables_id' 		=> 'nullable|string', 
             'column_name' 		=> 'nullable|string',
             'data_type' 		=> 'nullable|string', 
             'length' 			=> 'nullable|integer',
@@ -35,7 +48,7 @@ class APIController extends Controller
 
     	$tableDefination 		= $tableDefinationObj->findOrfail($request->id);
     	if($tableDefination){
-    		$tableDefination->table_name 		= $request->table_name;
+    		$tableDefination->tables_id 		= $request->table_id;
     		$tableDefination->column_name 		= $request->column_name;
     		$tableDefination->data_type 		= $request->data_type;
     		$tableDefination->length 			= $request->length;
@@ -62,7 +75,7 @@ class APIController extends Controller
      //    ]);
 
         $validator = Validator::make($request->all(), [
-		    'table_name' 		=> 'nullable|string', 
+		    'tables_id' 		=> 'nullable|string', 
             'column_name' 		=> 'nullable|string',
             'data_type' 		=> 'nullable|string', 
             'length' 			=> 'nullable|integer',
@@ -77,7 +90,7 @@ class APIController extends Controller
 
     	$tableDefination 	= new TableDefinition();
 
-    	$tableDefination->table_name 		= $request->table_name;
+    	$tableDefination->tables_id 		= $request->table_id;
 		$tableDefination->column_name 		= $request->column_name;
 		$tableDefination->data_type 		= $request->data_type;
 		$tableDefination->length 			= $request->length;

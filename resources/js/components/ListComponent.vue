@@ -16,6 +16,14 @@
             inset
             vertical
           ></v-divider>
+          <v-select
+            :items="tableList"
+            item-text="table_name"
+            item-value="id"
+            label="Table List"
+            v-model="sortSelectedTable"
+            v-on:change="sortByTable()"
+          ></v-select>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on }">
@@ -30,7 +38,14 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
-                      <v-text-field type="text" v-model="editedItem.table_name" label="Table Name"></v-text-field>
+                      <!-- <v-text-field type="text" v-model="editedItem.table_id" label="Table Name"></v-text-field> -->
+                      <v-select
+                        :items="tableList"
+                        item-text="table_name"
+                        item-value="id"
+                        label="Table Name"
+                        v-model="editedItem.table_id"
+                      ></v-select>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
                       <v-text-field type="text" v-model="editedItem.column_name" label="Column Name"></v-text-field>
@@ -111,7 +126,7 @@
         {
           text: 'Table',
           align: 'start',
-          value: 'table_name',
+          value: 'tables_id',
         },
         { text: 'Column', value: 'column_name' },
         { text: 'Data Type', value: 'data_type' },
@@ -122,10 +137,13 @@
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       tableDefinations: [],
+      tableList: [],
+      sortSelectedTable: '',
+      // selectedTableEdit: '',
       desserts: [],
       editedIndex: -1,
       editedItem: {
-        table_name: '',
+        table_id: '',
         column_name: '',
         data_type: '',
         length: 0,
@@ -134,7 +152,7 @@
         validation: '',
       },
       defaultItem: {
-        table_name: '',
+        table_id: '',
         column_name: '',
         data_type: '',
         length: 0,
@@ -168,6 +186,7 @@
 
     created () {
       this.getTableDefinations();
+      this.getTableList();
     },
 
     methods: {
@@ -188,6 +207,28 @@
           })
           .catch(error => console.log(error))
           
+      },
+
+      getTableList(){
+        axios
+          .get('/api/v1/tables')
+          .then(response => {
+            this.tableList = response.data;
+          })
+          .catch(error => console.log(error))
+      },
+
+      sortByTable(){
+        this.loadingStatus    = true;
+        axios
+          .get(`/api/v1/table-definations?id=${this.sortSelectedTable}`)
+          .then(response => {
+            // console.log(response.data);
+            this.tableDefinations = response.data;
+            this.loadingStatus    = false; // This will remove loading bar
+            this.showSnackBar('Data Sorted Successfully!', 'success');
+          })
+          .catch(error => console.log(error))
       },
 
       editItem (item) {

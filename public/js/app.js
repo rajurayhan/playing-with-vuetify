@@ -2286,6 +2286,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2295,7 +2310,7 @@ __webpack_require__.r(__webpack_exports__);
       headers: [{
         text: 'Table',
         align: 'start',
-        value: 'table_name'
+        value: 'tables_id'
       }, {
         text: 'Column',
         value: 'column_name'
@@ -2320,10 +2335,13 @@ __webpack_require__.r(__webpack_exports__);
         sortable: false
       }],
       tableDefinations: [],
+      tableList: [],
+      sortSelectedTable: '',
+      // selectedTableEdit: '',
       desserts: [],
       editedIndex: -1,
       editedItem: {
-        table_name: '',
+        table_id: '',
         column_name: '',
         data_type: '',
         length: 0,
@@ -2332,7 +2350,7 @@ __webpack_require__.r(__webpack_exports__);
         validation: ''
       },
       defaultItem: {
-        table_name: '',
+        table_id: '',
         column_name: '',
         data_type: '',
         length: 0,
@@ -2363,6 +2381,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.getTableDefinations();
+    this.getTableList();
   },
   methods: {
     showSnackBar: function showSnackBar(text, color) {
@@ -2382,13 +2401,36 @@ __webpack_require__.r(__webpack_exports__);
         return console.log(error);
       });
     },
+    getTableList: function getTableList() {
+      var _this2 = this;
+
+      axios.get('/api/v1/tables').then(function (response) {
+        _this2.tableList = response.data;
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    },
+    sortByTable: function sortByTable() {
+      var _this3 = this;
+
+      this.loadingStatus = true;
+      axios.get("/api/v1/table-definations?id=".concat(this.sortSelectedTable)).then(function (response) {
+        // console.log(response.data);
+        _this3.tableDefinations = response.data;
+        _this3.loadingStatus = false; // This will remove loading bar
+
+        _this3.showSnackBar('Data Sorted Successfully!', 'success');
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    },
     editItem: function editItem(item) {
       this.editedIndex = this.tableDefinations.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
     deleteItem: function deleteItem(item) {
-      var _this2 = this;
+      var _this4 = this;
 
       var index = this.tableDefinations.indexOf(item);
       console.log(item);
@@ -2397,7 +2439,7 @@ __webpack_require__.r(__webpack_exports__);
         axios.post('/api/v1/delete/table-definations', item).then(function (response) {
           console.log(response);
 
-          _this2.showSnackBar('Deleted Successfully!', 'success');
+          _this4.showSnackBar('Deleted Successfully!', 'success');
         })["catch"](function (error) {
           return console.log(error);
         });
@@ -2405,22 +2447,22 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     close: function close() {
-      var _this3 = this;
+      var _this5 = this;
 
       this.dialog = false;
       setTimeout(function () {
-        _this3.editedItem = Object.assign({}, _this3.defaultItem);
-        _this3.editedIndex = -1;
+        _this5.editedItem = Object.assign({}, _this5.defaultItem);
+        _this5.editedIndex = -1;
       }, 300);
     },
     save: function save() {
-      var _this4 = this;
+      var _this6 = this;
 
       if (this.editedIndex > -1) {
         axios.post('/api/v1/update/table-definations', this.editedItem).then(function (response) {
           console.log(response);
 
-          _this4.showSnackBar('Updated Successfully!', 'success');
+          _this6.showSnackBar('Updated Successfully!', 'success');
         })["catch"](function (error) {
           return console.log(error);
         });
@@ -2429,9 +2471,9 @@ __webpack_require__.r(__webpack_exports__);
         axios.post('/api/v1/add/table-definations', this.editedItem).then(function (response) {
           console.log(response);
 
-          _this4.showSnackBar('Created Successfully!', 'success');
+          _this6.showSnackBar('Created Successfully!', 'success');
 
-          _this4.tableDefinations.push(response.data);
+          _this6.tableDefinations.push(response.data);
         })["catch"](function (error) {
           return console.log(error);
         }); // this.tableDefinations.push(this.editedItem)
@@ -40498,6 +40540,27 @@ var render = function() {
                       attrs: { inset: "", vertical: "" }
                     }),
                     _vm._v(" "),
+                    _c("v-select", {
+                      attrs: {
+                        items: _vm.tableList,
+                        "item-text": "table_name",
+                        "item-value": "id",
+                        label: "Table List"
+                      },
+                      on: {
+                        change: function($event) {
+                          return _vm.sortByTable()
+                        }
+                      },
+                      model: {
+                        value: _vm.sortSelectedTable,
+                        callback: function($$v) {
+                          _vm.sortSelectedTable = $$v
+                        },
+                        expression: "sortSelectedTable"
+                      }
+                    }),
+                    _vm._v(" "),
                     _c("v-spacer"),
                     _vm._v(" "),
                     _c(
@@ -40563,23 +40626,24 @@ var render = function() {
                                             }
                                           },
                                           [
-                                            _c("v-text-field", {
+                                            _c("v-select", {
                                               attrs: {
-                                                type: "text",
+                                                items: _vm.tableList,
+                                                "item-text": "table_name",
+                                                "item-value": "id",
                                                 label: "Table Name"
                                               },
                                               model: {
-                                                value:
-                                                  _vm.editedItem.table_name,
+                                                value: _vm.editedItem.table_id,
                                                 callback: function($$v) {
                                                   _vm.$set(
                                                     _vm.editedItem,
-                                                    "table_name",
+                                                    "table_id",
                                                     $$v
                                                   )
                                                 },
                                                 expression:
-                                                  "editedItem.table_name"
+                                                  "editedItem.table_id"
                                               }
                                             })
                                           ],
@@ -96725,15 +96789,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************************!*\
   !*** ./resources/js/components/ListComponent.vue ***!
   \***************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ListComponent_vue_vue_type_template_id_6ee53bb8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ListComponent.vue?vue&type=template&id=6ee53bb8& */ "./resources/js/components/ListComponent.vue?vue&type=template&id=6ee53bb8&");
 /* harmony import */ var _ListComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ListComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/ListComponent.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _ListComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _ListComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 /* harmony import */ var _node_modules_vuetify_loader_lib_runtime_installComponents_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vuetify-loader/lib/runtime/installComponents.js */ "./node_modules/vuetify-loader/lib/runtime/installComponents.js");
 /* harmony import */ var _node_modules_vuetify_loader_lib_runtime_installComponents_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vuetify_loader_lib_runtime_installComponents_js__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var vuetify_lib_components_VBtn__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuetify/lib/components/VBtn */ "./node_modules/vuetify/lib/components/VBtn/index.js");
@@ -96743,9 +96806,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuetify_lib_components_VDialog__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vuetify/lib/components/VDialog */ "./node_modules/vuetify/lib/components/VDialog/index.js");
 /* harmony import */ var vuetify_lib_components_VDivider__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vuetify/lib/components/VDivider */ "./node_modules/vuetify/lib/components/VDivider/index.js");
 /* harmony import */ var vuetify_lib_components_VIcon__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vuetify/lib/components/VIcon */ "./node_modules/vuetify/lib/components/VIcon/index.js");
-/* harmony import */ var vuetify_lib_components_VSnackbar__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vuetify/lib/components/VSnackbar */ "./node_modules/vuetify/lib/components/VSnackbar/index.js");
-/* harmony import */ var vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! vuetify/lib/components/VTextField */ "./node_modules/vuetify/lib/components/VTextField/index.js");
-/* harmony import */ var vuetify_lib_components_VToolbar__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! vuetify/lib/components/VToolbar */ "./node_modules/vuetify/lib/components/VToolbar/index.js");
+/* harmony import */ var vuetify_lib_components_VSelect__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vuetify/lib/components/VSelect */ "./node_modules/vuetify/lib/components/VSelect/index.js");
+/* harmony import */ var vuetify_lib_components_VSnackbar__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! vuetify/lib/components/VSnackbar */ "./node_modules/vuetify/lib/components/VSnackbar/index.js");
+/* harmony import */ var vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! vuetify/lib/components/VTextField */ "./node_modules/vuetify/lib/components/VTextField/index.js");
+/* harmony import */ var vuetify_lib_components_VToolbar__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! vuetify/lib/components/VToolbar */ "./node_modules/vuetify/lib/components/VToolbar/index.js");
 
 
 
@@ -96783,7 +96847,8 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 
 
-_node_modules_vuetify_loader_lib_runtime_installComponents_js__WEBPACK_IMPORTED_MODULE_3___default()(component, {VBtn: vuetify_lib_components_VBtn__WEBPACK_IMPORTED_MODULE_4__["VBtn"],VCard: vuetify_lib_components_VCard__WEBPACK_IMPORTED_MODULE_5__["VCard"],VCardActions: vuetify_lib_components_VCard__WEBPACK_IMPORTED_MODULE_5__["VCardActions"],VCardText: vuetify_lib_components_VCard__WEBPACK_IMPORTED_MODULE_5__["VCardText"],VCardTitle: vuetify_lib_components_VCard__WEBPACK_IMPORTED_MODULE_5__["VCardTitle"],VCol: vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_6__["VCol"],VContainer: vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_6__["VContainer"],VDataTable: vuetify_lib_components_VDataTable__WEBPACK_IMPORTED_MODULE_7__["VDataTable"],VDialog: vuetify_lib_components_VDialog__WEBPACK_IMPORTED_MODULE_8__["VDialog"],VDivider: vuetify_lib_components_VDivider__WEBPACK_IMPORTED_MODULE_9__["VDivider"],VIcon: vuetify_lib_components_VIcon__WEBPACK_IMPORTED_MODULE_10__["VIcon"],VRow: vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_6__["VRow"],VSnackbar: vuetify_lib_components_VSnackbar__WEBPACK_IMPORTED_MODULE_11__["VSnackbar"],VSpacer: vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_6__["VSpacer"],VTextField: vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_12__["VTextField"],VToolbar: vuetify_lib_components_VToolbar__WEBPACK_IMPORTED_MODULE_13__["VToolbar"],VToolbarTitle: vuetify_lib_components_VToolbar__WEBPACK_IMPORTED_MODULE_13__["VToolbarTitle"]})
+
+_node_modules_vuetify_loader_lib_runtime_installComponents_js__WEBPACK_IMPORTED_MODULE_3___default()(component, {VBtn: vuetify_lib_components_VBtn__WEBPACK_IMPORTED_MODULE_4__["VBtn"],VCard: vuetify_lib_components_VCard__WEBPACK_IMPORTED_MODULE_5__["VCard"],VCardActions: vuetify_lib_components_VCard__WEBPACK_IMPORTED_MODULE_5__["VCardActions"],VCardText: vuetify_lib_components_VCard__WEBPACK_IMPORTED_MODULE_5__["VCardText"],VCardTitle: vuetify_lib_components_VCard__WEBPACK_IMPORTED_MODULE_5__["VCardTitle"],VCol: vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_6__["VCol"],VContainer: vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_6__["VContainer"],VDataTable: vuetify_lib_components_VDataTable__WEBPACK_IMPORTED_MODULE_7__["VDataTable"],VDialog: vuetify_lib_components_VDialog__WEBPACK_IMPORTED_MODULE_8__["VDialog"],VDivider: vuetify_lib_components_VDivider__WEBPACK_IMPORTED_MODULE_9__["VDivider"],VIcon: vuetify_lib_components_VIcon__WEBPACK_IMPORTED_MODULE_10__["VIcon"],VRow: vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_6__["VRow"],VSelect: vuetify_lib_components_VSelect__WEBPACK_IMPORTED_MODULE_11__["VSelect"],VSnackbar: vuetify_lib_components_VSnackbar__WEBPACK_IMPORTED_MODULE_12__["VSnackbar"],VSpacer: vuetify_lib_components_VGrid__WEBPACK_IMPORTED_MODULE_6__["VSpacer"],VTextField: vuetify_lib_components_VTextField__WEBPACK_IMPORTED_MODULE_13__["VTextField"],VToolbar: vuetify_lib_components_VToolbar__WEBPACK_IMPORTED_MODULE_14__["VToolbar"],VToolbarTitle: vuetify_lib_components_VToolbar__WEBPACK_IMPORTED_MODULE_14__["VToolbarTitle"]})
 
 
 /* hot reload */
@@ -96797,7 +96862,7 @@ component.options.__file = "resources/js/components/ListComponent.vue"
 /*!****************************************************************************!*\
   !*** ./resources/js/components/ListComponent.vue?vue&type=script&lang=js& ***!
   \****************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

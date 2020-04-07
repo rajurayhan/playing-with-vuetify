@@ -101,14 +101,58 @@ Tasks:
 		We will not useThird party library. 
 		
 		- Error Handling 
-		- Database Table Create Functions
+		- Database Table Create Functions (Dynamic) 
 		- On Edit Dialog,
-			Table name is readonly. 
+			Table name is readonly. // Not Valid now. 
 		- Add dropdown 
 			All
 			e_hiiku_seiseki	
 			user
 			anotherTable 
+
+	03-04-2020: 
+		- API Error Handling 
+		- Table Name Will Be Dropdown from m_table table and Editable/Changeable. 
+		- Change Table Name on Add/Edit dialog from text to dropdown. 
+		- Add dropdown  (This will just sort the table data as per the selection)
+			All
+			e_hiiku_seiseki	
+			user
+			anotherTable 
+
+
+Why we do not want user to be able to change it? 
+
+Case: 
+	When can cange? 
+		- 
+	When can not cange? 
+		- 
+
+	User selected wrong table name and saved. If it's readonly, user can not change the table. S/he will have to delete and create one again. Isn't it? 
+
+	e_hiiku_seiseki 
+	e_anythings
+
+	06-04-2020: 
+
+		- Made changes on migrations as per our discission on last day. Replaced table name with table id and made relations on model.
+		- Created new migration, model and API to get table list
+		- Integrated Table List API on frontend.
+		- Added drop-down on list page.
+		- Added drop-down on Add and Edit modal.
+		- Updated Create and Update API
+		- Error Handling is on progress.
+
+		created a migration for this table with following fields:
+			- id
+			- table_name
+			- table_name_alias
+
+		php artisan db:seed --class=TablesSeeder
+
+	07-04-2020: 
+
 
 
 

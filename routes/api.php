@@ -20,6 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/v1/table-definations', 'APIController@index')->name('getTableDefinations');
 
+Route::get('/v1/tables', 'APIController@getTables')->name('getTables');
+
 Route::post('/v1/update/table-definations', 'APIController@update')->name('updateTableDefinations');
 
 Route::post('/v1/add/table-definations', 'APIController@add')->name('addTableDefinations');
