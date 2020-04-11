@@ -153,6 +153,20 @@ Case:
 
 	07-04-2020: 
 
+	08-04-2020: 
+		- What about Reseting all table - Add Cross icon / Clear button. 
+		- Set Default Table Value on Edit Modal. 
+		- Read VueX (just for information). 
+		- Replace Table name with Table Alias on Frontend. 
+		- Use Laravel API Resource to format Response. 
+		- API Error Handling 
 
+	09-04-2020: 
+		- Weekly Basis Spreadsheet
+		- Send Spreadsheet 
+		- Set TableName after Update. Done 
+		- Add Cross icon / Clear button.  - Done 
+		- Use Resource instead of RAW data response. 
+		- API Error Handling 
 
 

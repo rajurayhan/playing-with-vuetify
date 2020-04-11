@@ -21,6 +21,7 @@
             item-text="table_name"
             item-value="id"
             label="Table List"
+            :clearable="true"
             v-model="sortSelectedTable"
             v-on:change="sortByTable()"
           ></v-select>
@@ -38,13 +39,13 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12" sm="6" md="4">
-                      <!-- <v-text-field type="text" v-model="editedItem.table_id" label="Table Name"></v-text-field> -->
+                      <!-- <v-text-field type="text" v-model="editedItem.tables_id" label="Table Name"></v-text-field> -->
                       <v-select
                         :items="tableList"
                         item-text="table_name"
                         item-value="id"
                         label="Table Name"
-                        v-model="editedItem.table_id"
+                        v-model="editedItem.tables_id"
                       ></v-select>
                     </v-col>
                     <v-col cols="12" sm="6" md="4">
@@ -126,7 +127,7 @@
         {
           text: 'Table',
           align: 'start',
-          value: 'tables_id',
+          value: 'tableName',
         },
         { text: 'Column', value: 'column_name' },
         { text: 'Data Type', value: 'data_type' },
@@ -143,7 +144,8 @@
       desserts: [],
       editedIndex: -1,
       editedItem: {
-        table_id: '',
+        tables_id: '',
+        tableName: '',
         column_name: '',
         data_type: '',
         length: 0,
@@ -152,7 +154,8 @@
         validation: '',
       },
       defaultItem: {
-        table_id: '',
+        tables_id: '',
+        tableName: '',
         column_name: '',
         data_type: '',
         length: 0,
@@ -220,15 +223,19 @@
 
       sortByTable(){
         this.loadingStatus    = true;
-        axios
-          .get(`/api/v1/table-definations?id=${this.sortSelectedTable}`)
-          .then(response => {
-            // console.log(response.data);
-            this.tableDefinations = response.data;
-            this.loadingStatus    = false; // This will remove loading bar
-            this.showSnackBar('Data Sorted Successfully!', 'success');
-          })
-          .catch(error => console.log(error))
+        if(this.sortSelectedTable){
+        	axios
+	          .get(`/api/v1/table-definations?id=${this.sortSelectedTable}`)
+	          .then(response => {
+	            this.tableDefinations = response.data;
+	            this.loadingStatus    = false; // This will remove loading bar
+	            this.showSnackBar('Data Sorted Successfully!', 'success');
+	          })
+	          .catch(error => console.log(error))
+        }
+        else{
+        	this.getTableDefinations();
+        }
       },
 
       editItem (item) {
@@ -261,16 +268,16 @@
         }, 300)
       },
 
-      save () {
+      save () {    	
         if (this.editedIndex > -1) {
+        	var updateIndex = this.editedIndex;
           axios
             .post('/api/v1/update/table-definations', this.editedItem)
             .then(response => {
-              console.log(response);
+              Object.assign(this.tableDefinations[updateIndex], response.data)
               this.showSnackBar('Updated Successfully!', 'success');
             })
             .catch(error => console.log(error))
-          Object.assign(this.tableDefinations[this.editedIndex], this.editedItem)
         } else {
           axios
             .post('/api/v1/add/table-definations', this.editedItem)
@@ -280,7 +287,6 @@
               this.tableDefinations.push(response.data)
             })
             .catch(error => console.log(error))
-          // this.tableDefinations.push(this.editedItem)
         }
         this.close()
       },

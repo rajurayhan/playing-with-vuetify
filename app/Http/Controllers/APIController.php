@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TableDefinition;
 use App\Models\Tables;
+use App\Http\Resources\TDefination;
 use Validator;
 
 class APIController extends Controller
@@ -15,9 +16,17 @@ class APIController extends Controller
             $tableDefinations = TableDefinition::where('tables_id', $tableID)->get();
         }
         else{
-            $tableDefinations = TableDefinition::with('tables')->get();
+            $tableDefinations = TableDefinition::get();
         }
-    	return response()->json($tableDefinations);
+
+        $tableDefinitaionsData = $tableDefinations->map(function($defination){
+            $defination->tableName = $defination->tables->table_name;
+            $defination->unsetRelation('tables');
+            return $defination;
+            // return new TDefination($defination);
+        });
+
+    	return response()->json($tableDefinitaionsData);
     }
 
     public function getTables(){
@@ -28,10 +37,10 @@ class APIController extends Controller
 
     public function update(Request $request){
 
-    	info($request->all());
+    	// info(['Req' => $request->all()]);
 
     	$validator = Validator::make($request->all(), [
-		    'tables_id' 		=> 'nullable|string', 
+		    'tables_id' 		=> 'nullable|integer', 
             'column_name' 		=> 'nullable|string',
             'data_type' 		=> 'nullable|string', 
             'length' 			=> 'nullable|integer',
@@ -48,7 +57,7 @@ class APIController extends Controller
 
     	$tableDefination 		= $tableDefinationObj->findOrfail($request->id);
     	if($tableDefination){
-    		$tableDefination->tables_id 		= $request->table_id;
+    		$tableDefination->tables_id 		= $request->tables_id;
     		$tableDefination->column_name 		= $request->column_name;
     		$tableDefination->data_type 		= $request->data_type;
     		$tableDefination->length 			= $request->length;
@@ -57,6 +66,10 @@ class APIController extends Controller
     		$tableDefination->validation 		= $request->validation;
 
     		$tableDefination->save();
+
+            $tableDefination->tableName = $tableDefination->tables->table_name;
+
+            // info(['Data' => $tableDefination]);
     	}
     	return response()->json($tableDefination);
 
@@ -75,7 +88,7 @@ class APIController extends Controller
      //    ]);
 
         $validator = Validator::make($request->all(), [
-		    'tables_id' 		=> 'nullable|string', 
+		    'tables_id' 		=> 'nullable|integer', 
             'column_name' 		=> 'nullable|string',
             'data_type' 		=> 'nullable|string', 
             'length' 			=> 'nullable|integer',
@@ -99,6 +112,8 @@ class APIController extends Controller
 		$tableDefination->validation 		= $request->validation;
 
 		$tableDefination->save();
+
+        $tableDefination->tableName = $tableDefination->tables->table_name;
 
 		return response()->json($tableDefination);
     }

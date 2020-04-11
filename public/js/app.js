@@ -2301,6 +2301,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2310,7 +2311,7 @@ __webpack_require__.r(__webpack_exports__);
       headers: [{
         text: 'Table',
         align: 'start',
-        value: 'tables_id'
+        value: 'tableName'
       }, {
         text: 'Column',
         value: 'column_name'
@@ -2341,7 +2342,8 @@ __webpack_require__.r(__webpack_exports__);
       desserts: [],
       editedIndex: -1,
       editedItem: {
-        table_id: '',
+        tables_id: '',
+        tableName: '',
         column_name: '',
         data_type: '',
         length: 0,
@@ -2350,7 +2352,8 @@ __webpack_require__.r(__webpack_exports__);
         validation: ''
       },
       defaultItem: {
-        table_id: '',
+        tables_id: '',
+        tableName: '',
         column_name: '',
         data_type: '',
         length: 0,
@@ -2414,15 +2417,19 @@ __webpack_require__.r(__webpack_exports__);
       var _this3 = this;
 
       this.loadingStatus = true;
-      axios.get("/api/v1/table-definations?id=".concat(this.sortSelectedTable)).then(function (response) {
-        // console.log(response.data);
-        _this3.tableDefinations = response.data;
-        _this3.loadingStatus = false; // This will remove loading bar
 
-        _this3.showSnackBar('Data Sorted Successfully!', 'success');
-      })["catch"](function (error) {
-        return console.log(error);
-      });
+      if (this.sortSelectedTable) {
+        axios.get("/api/v1/table-definations?id=".concat(this.sortSelectedTable)).then(function (response) {
+          _this3.tableDefinations = response.data;
+          _this3.loadingStatus = false; // This will remove loading bar
+
+          _this3.showSnackBar('Data Sorted Successfully!', 'success');
+        })["catch"](function (error) {
+          return console.log(error);
+        });
+      } else {
+        this.getTableDefinations();
+      }
     },
     editItem: function editItem(item) {
       this.editedIndex = this.tableDefinations.indexOf(item);
@@ -2459,14 +2466,14 @@ __webpack_require__.r(__webpack_exports__);
       var _this6 = this;
 
       if (this.editedIndex > -1) {
+        var updateIndex = this.editedIndex;
         axios.post('/api/v1/update/table-definations', this.editedItem).then(function (response) {
-          console.log(response);
+          Object.assign(_this6.tableDefinations[updateIndex], response.data);
 
           _this6.showSnackBar('Updated Successfully!', 'success');
         })["catch"](function (error) {
           return console.log(error);
         });
-        Object.assign(this.tableDefinations[this.editedIndex], this.editedItem);
       } else {
         axios.post('/api/v1/add/table-definations', this.editedItem).then(function (response) {
           console.log(response);
@@ -2476,7 +2483,7 @@ __webpack_require__.r(__webpack_exports__);
           _this6.tableDefinations.push(response.data);
         })["catch"](function (error) {
           return console.log(error);
-        }); // this.tableDefinations.push(this.editedItem)
+        });
       }
 
       this.close();
@@ -40545,7 +40552,8 @@ var render = function() {
                         items: _vm.tableList,
                         "item-text": "table_name",
                         "item-value": "id",
-                        label: "Table List"
+                        label: "Table List",
+                        clearable: true
                       },
                       on: {
                         change: function($event) {
@@ -40634,16 +40642,16 @@ var render = function() {
                                                 label: "Table Name"
                                               },
                                               model: {
-                                                value: _vm.editedItem.table_id,
+                                                value: _vm.editedItem.tables_id,
                                                 callback: function($$v) {
                                                   _vm.$set(
                                                     _vm.editedItem,
-                                                    "table_id",
+                                                    "tables_id",
                                                     $$v
                                                   )
                                                 },
                                                 expression:
-                                                  "editedItem.table_id"
+                                                  "editedItem.tables_id"
                                               }
                                             })
                                           ],
