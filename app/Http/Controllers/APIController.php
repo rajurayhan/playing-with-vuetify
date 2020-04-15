@@ -37,10 +37,8 @@ class APIController extends Controller
 
     public function update(Request $request){
 
-    	// info(['Req' => $request->all()]);
-
     	$validator = Validator::make($request->all(), [
-		    'tables_id' 		=> 'nullable|integer', 
+		    'tables_id' 		=> 'nullable|string', 
             'column_name' 		=> 'nullable|string',
             'data_type' 		=> 'nullable|string', 
             'length' 			=> 'nullable|integer',
@@ -50,7 +48,7 @@ class APIController extends Controller
 		]);
 
 		if ($validator->fails()) {
-		    return response()->json(['errors'=>$validator->errors()]);
+		    return response()->json($validator->errors(), 422);
 		}
 
     	$tableDefinationObj 	= new TableDefinition();
@@ -77,16 +75,6 @@ class APIController extends Controller
 
     public function add(Request $request){
 
-    	// $validatedData = $request->validate([
-     //        'table_name' 		=> 'nullable|string', 
-     //        'column_name' 		=> 'nullable|string',
-     //        'data_type' 		=> 'nullable|string', 
-     //        'length' 			=> 'nullable|integer',
-     //        'maximum_number' 	=> 'nullable|integer',
-     //        'decimal_part' 		=> 'nullable|integer',
-     //        'validation' 		=> 'nullable|string'
-     //    ]);
-
         $validator = Validator::make($request->all(), [
 		    'tables_id' 		=> 'nullable|integer', 
             'column_name' 		=> 'nullable|string',
@@ -98,7 +86,7 @@ class APIController extends Controller
 		]);
 
 		if ($validator->fails()) {
-		    return response()->json(['errors'=>$validator->errors()]);
+		    return response()->json($validator->errors(), 422);
 		}
 
     	$tableDefination 	= new TableDefinition();
@@ -123,7 +111,13 @@ class APIController extends Controller
     	$tableDefinationObj 	= new TableDefinition();
     	$tableDefination 		= $tableDefinationObj->findOrfail($request->id);
 
-    	$tableDefination->delete();
+        if(count($tableDefination)>0){
+            $tableDefination->delete();
+        }
+        else{
+            return response()->json('Resource Not Found!', 404);
+        }
+    	
 
     	return response()->json('Deleted Successfully!');
     }

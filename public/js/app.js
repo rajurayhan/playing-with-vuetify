@@ -2369,7 +2369,8 @@ __webpack_require__.r(__webpack_exports__);
         timeout: 5000,
         x: 'right',
         y: 'top'
-      }
+      },
+      validationErrors: ''
     };
   },
   computed: {
@@ -2423,7 +2424,7 @@ __webpack_require__.r(__webpack_exports__);
           _this3.tableDefinations = response.data;
           _this3.loadingStatus = false; // This will remove loading bar
 
-          _this3.showSnackBar('Data Sorted Successfully!', 'success');
+          _this3.showSnackBar('Data Sorted Successfully!', 'error');
         })["catch"](function (error) {
           return console.log(error);
         });
@@ -2435,6 +2436,7 @@ __webpack_require__.r(__webpack_exports__);
       this.editedIndex = this.tableDefinations.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
+      this.showSnackBar('An Error Snackbar!', 'error');
     },
     deleteItem: function deleteItem(item) {
       var _this4 = this;
@@ -2446,11 +2448,12 @@ __webpack_require__.r(__webpack_exports__);
         axios.post('/api/v1/delete/table-definations', item).then(function (response) {
           console.log(response);
 
+          _this4.tableDefinations.splice(index, 1);
+
           _this4.showSnackBar('Deleted Successfully!', 'success');
         })["catch"](function (error) {
-          return console.log(error);
+          console.log(error.response);
         });
-        this.tableDefinations.splice(index, 1);
       }
     },
     close: function close() {
@@ -2468,11 +2471,12 @@ __webpack_require__.r(__webpack_exports__);
       if (this.editedIndex > -1) {
         var updateIndex = this.editedIndex;
         axios.post('/api/v1/update/table-definations', this.editedItem).then(function (response) {
+          // console.log(response);
           Object.assign(_this6.tableDefinations[updateIndex], response.data);
 
           _this6.showSnackBar('Updated Successfully!', 'success');
         })["catch"](function (error) {
-          return console.log(error);
+          console.log(error.response);
         });
       } else {
         axios.post('/api/v1/add/table-definations', this.editedItem).then(function (response) {
@@ -2482,7 +2486,7 @@ __webpack_require__.r(__webpack_exports__);
 
           _this6.tableDefinations.push(response.data);
         })["catch"](function (error) {
-          return console.log(error);
+          console.log(error.response);
         });
       }
 

@@ -18,6 +18,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+Route::fallback(function(){
+    return response()->json([
+        'message' => 'API Endpoint not found.'], 404);
+}); // Fallback API route 
+
 Route::get('/v1/table-definations', 'APIController@index')->name('getTableDefinations');
 
 Route::get('/v1/tables', 'APIController@getTables')->name('getTables');

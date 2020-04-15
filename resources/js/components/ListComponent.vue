@@ -172,7 +172,8 @@
         timeout: 5000, 
         x: 'right', 
         y: 'top',
-      }
+      },
+      validationErrors: '',
     }),
 
     computed: {
@@ -229,7 +230,7 @@
 	          .then(response => {
 	            this.tableDefinations = response.data;
 	            this.loadingStatus    = false; // This will remove loading bar
-	            this.showSnackBar('Data Sorted Successfully!', 'success');
+	            this.showSnackBar('Data Sorted Successfully!', 'error');
 	          })
 	          .catch(error => console.log(error))
         }
@@ -241,7 +242,8 @@
       editItem (item) {
         this.editedIndex = this.tableDefinations.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        this.dialog = true
+        this.dialog = true;
+        this.showSnackBar('An Error Snackbar!', 'error');
       },
 
       deleteItem (item) {
@@ -252,11 +254,12 @@
             .post('/api/v1/delete/table-definations', item)
             .then(response => {
               console.log(response);
+              this.tableDefinations.splice(index, 1)
               this.showSnackBar('Deleted Successfully!', 'success');
             })
-            .catch(error => console.log(error))
-
-            this.tableDefinations.splice(index, 1)
+            .catch(error => {
+              console.log(error.response)
+            })           
         }
       },
 
@@ -274,10 +277,13 @@
           axios
             .post('/api/v1/update/table-definations', this.editedItem)
             .then(response => {
+              // console.log(response);
               Object.assign(this.tableDefinations[updateIndex], response.data)
               this.showSnackBar('Updated Successfully!', 'success');
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+              console.log(error.response)
+            })
         } else {
           axios
             .post('/api/v1/add/table-definations', this.editedItem)
@@ -286,7 +292,9 @@
               this.showSnackBar('Created Successfully!', 'success');
               this.tableDefinations.push(response.data)
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+              console.log(error.response)
+            })
         }
         this.close()
       },

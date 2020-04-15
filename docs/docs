@@ -163,10 +163,54 @@ Case:
 
 	09-04-2020: 
 		- Weekly Basis Spreadsheet
-		- Send Spreadsheet 
+		- Send Spreadsheet - Done
 		- Set TableName after Update. Done 
 		- Add Cross icon / Clear button.  - Done 
-		- Use Resource instead of RAW data response. 
-		- API Error Handling 
+		- Use Resource instead of RAW data response. - Done
+		- API Error Handling - Working on It. 
+			- Implemented Validation On Create Method
+			- Implemented Validation On Update Method
+			- Implemented Model Not Found Exception On Delete Method
+			- Exception Handled. 
+
+			- Need to show Error Messages on Frontend
+
+		404	Not Found (page or other resource doesn’t exist)
+		401	Not authorized (not logged in)
+		403	Logged in but access to requested area is forbidden
+		400	Bad request (something wrong with URL or parameters)
+		422	Unprocessable Entity (validation failed)
+		500	General server error
+
+	14-04-2020: 
+		- Specify/List Error Handling Tasks 
+		- If DB is Down or Any other Problem in server side. 
+			- What happens (Task - Error Handling design)
+		- 
+
+		Errors That May Happens - 
+			- If server is Down
+				= 
+			- If DB connection fails
+			 	= 
+			- If calls HTTPS over HTTP 
+				= 
+			- If Calls wrong Method 
+				= 
+			- If Authentication fails / Auth token mismatch 
+				= 
+			- If content type is missing 
+				= 
+			- If validation fails
+				= 
+			- If calls unavailable route (404)
+				= 
+		
+	15- 04- 2020: 
+		- Implemet not Merging 
+		- /admin will start my app
+		- APITableDefinitionController
+		 	- It handles CRUD of TableDefination 
+		- Send Application Structure Design After Merging. 
 
 
